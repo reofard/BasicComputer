@@ -73,7 +73,16 @@ void HLT()
 {
 	S = false;
 }
-
+// LDA명령어 처리 함수
+void LDA() {
+	DR = M[AR];
+	AC = DR;
+}
+// SZE명령어 처리 함수
+void SZE() {
+	if (E == 0)
+		PC = PC + 1;
+}
 void executeInstruction(string symbol)
 {
 	if ("AND" == symbol)
