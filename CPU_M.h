@@ -18,17 +18,23 @@ word TR;
 word INPR;
 word OUTR;
 
+bool S;
+bool E;
+
 //메모리에 데이터를 집어넣는 함수
 //매개변수 (배열의 위치, 값)
 void inputData(int position, word data);
 
 //명령어 분리 (opcode 와 address)
-void decodeInstruction(word instruction);
+string decodeInstruction(word instruction);
 
 //opcode 해독
 void decodeOpcode();
 
 //명령어 판별
 void readInstruction();
+
+//명령어 호출
+void executeInstruction(string symbol);
 
 void init();

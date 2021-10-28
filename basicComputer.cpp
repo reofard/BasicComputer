@@ -11,14 +11,17 @@ using namespace std;
 void inputData(int position, word data) { }
 
 //명령어 분리 (opcode 와 address)
-void decodeInstruction(word instruction)
+string decodeInstruction(word instruction)
 {
 	// Instruction Register에 명령어 저장
 	IR = instruction;
 	
 	// 명령어 타입 추출
+	//T2
 	byte type = (byte)(IR >> 12);
+	bool I = type | 8;
 
+	//DECODE
 	// 구분해낸 명령어 문자열을 통해 명령어 형식별로 결과를 출력함
 	switch (type)
 	{
@@ -27,25 +30,91 @@ void decodeInstruction(word instruction)
 		case 0x7:
 			cout << " 02. 명령어 형식 = 'Register' reference operation" << endl;
 			cout << " 03. Symbol = " << HexToString(IR) << endl;
-			break;
+			return HexToString(IR);
 
 		//Opcode = 111, I = 1
 		case 0xf:
 			cout << " 02. 명령어 형식 = 'I/O' operation" << endl;
 			cout << " 03. Symbol = " << HexToString(IR) << endl;
-			break;
+			return HexToString(IR);
 
 		//Opcode = 000~110, I = 0, 1
 		default:
 			cout << " 02. 명령어 형식 = 'Memory' reference operation" << endl;
 			cout << " 03. Symbol = " << mHexToString(type) << endl;
 
-			// 주소모드를 나타내는 4비트를 밀어버리고 12비트의 Address만 남김			
-			TR = (IR << 4);
-			cout << " 04. Address = " << std::hex << (TR / 16) << "H" << endl;
+			// 주소모드를 나타내는 4비트를 밀어버리고 12비트의 Address만 남김
+			if(I==1)
+			{
+				AR=(IR << 4);
+				AR=MEMORY[AR];
+			}
+			else AR = (IR << 4);
+			cout << " 04. Address = " << std::hex << (AR / 16) << "H" << endl;
 
-			break;
+			return mHexToString(type);
 	}
+}
+void executeInstruction(string symbol)
+{
+	switch(symbol)
+	{
+		case "AND":
+			break;
+		case "ADD":
+			break;
+		case "LDA":
+			break;
+		case "STA":
+			break;
+		case "BUN":
+			break;
+		case "BSA":
+			break;
+		case "ISZ":
+			break;
+		case "CLA":
+			break;
+		case "CLE":
+			break;
+		case "CMA":
+			break;
+		case "CME":
+			break;
+		case "CIR":
+			break;
+		case "CIL":
+			break;
+		case "INC":
+			break;
+		case "SPA":
+			break;
+		case "SNA":
+			break;
+		case "SZA":
+			break;
+		case "SZE":
+			break;
+		case "HLT":
+			break;
+		default:
+			cout << "I/O 명령어" <<endl
+	}
+}
+//CMA명령어 처리 함수
+void CMA()
+{
+	AC=~AC;
+}
+//SPA명령어 처리 함수
+void SPA()
+{
+	if((AC>>15)==0)PC=PC+1;
+}
+//HLT명령어 처리 함수
+void HLT()
+{
+	S = false;
 }
 
 void init()
@@ -53,6 +122,7 @@ void init()
 	DR = 0;
 	AR = 0;
 	TR = 0;
+	S = true;
 }
 
 int main()
@@ -63,14 +133,23 @@ int main()
 
 	//메모리에 임의 명령어를 입력한다.
 	MEMORY[0] = (word)0xf800;
+	MEMORY[1] = (word)0x7001;
 
-	//메모리 0번에서 명령어 읽음.
-	word testInstruction = MEMORY[0];
+	while(S)
+	{
+		//FETCH
+		//T0
+		AR=PC;
 
-	cout << " 01. 입력 = 0x" << std::hex << testInstruction << endl;
+		word testInstruction = MEMORY[AR];
+		PC++;
 
-	//명령어 해독 실행
-	decodeInstruction(testInstruction);
+		cout << " 01. 입력 = 0x" << std::hex << testInstruction << endl;
 
+		string symbol = decodeInstruction(testInstruction);
+
+		//EXECUTION
+		executeInstruction(symbol);
+	}
 	return 0;
 }
