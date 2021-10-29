@@ -74,6 +74,16 @@ void HLT()
 	S = false;
 }
 
+void AND()
+{
+	AC = AC & M[AR];
+}
+
+void CLE()
+{
+	E = flase;
+}
+
 void executeInstruction(string symbol)
 {
 	if ("AND" == symbol)
