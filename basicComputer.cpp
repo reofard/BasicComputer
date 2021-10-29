@@ -74,11 +74,13 @@ void HLT()
 	S = false;
 }
 
+// AND 명령어 처리 함수
 void AND()
 {
 	AC = AC & M[AR];
 }
 
+// CLE 명령어 처리 함수
 void CLE()
 {
 	E = flase;
