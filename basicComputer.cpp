@@ -74,6 +74,36 @@ void HLT()
 	S = false;
 }
 
+void SNA()
+{
+    if ((AC >> 15) == 1)
+        PC = PC + 1;
+}
+
+void CIR()
+{
+    bool min_bit = AC & 1;
+    AC = AC >> 1;
+    AC = AC | (E << 15);
+    E = min_bit;
+}
+
+void ADD()
+{
+    DR = M[AR]
+    
+    bool carry = false;
+    
+    for(int i = 0; i < 16; i++) {
+        bool A = AC & (1 << i);
+        bool B = DR & (1 << i);
+        carry = (A&B) | ((A^B) & carry);
+    }
+    
+    E = carry;
+    AC = AC + DR;
+}
+
 void executeInstruction(string symbol)
 {
 	if ("AND" == symbol)
