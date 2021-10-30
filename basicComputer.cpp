@@ -90,7 +90,7 @@ void CIR()
 
 void ADD()
 {
-    DR = M[AR]
+    DR = MEMORY[AR]
     
     bool carry = false;
     
