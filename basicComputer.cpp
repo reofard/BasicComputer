@@ -33,7 +33,7 @@ string decodeInstruction(word instruction)
 	// 명령어 타입 추출
 	// T2
 	byte type = (byte)(IR >> 12);
-	bool I = type | 8;
+	bool I = type & 8;
 
 	// DECODE
 	//  구분해낸 명령어 문자열을 통해 명령어 형식별로 결과를 출력함
