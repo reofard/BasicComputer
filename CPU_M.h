@@ -1,3 +1,4 @@
+#pragma once
 #include <iostream>
 
 typedef unsigned char byte;
@@ -6,20 +7,20 @@ typedef unsigned short word;
 using namespace std;
 
 //메모리
-word MEMORY[4096];
+extern word MEMORY[4096];
 
 //레지스터
-word DR;
-word AR;
-word AC;
-word IR;
-word PC;
-word TR;
-word INPR;
-word OUTR;
+extern word DR;
+extern word AR;
+extern word AC;
+extern word IR;
+extern word PC;
+extern word TR;
+extern word INPR;
+extern word OUTR;
 
-bool S;
-bool E;
+extern bool S;
+extern bool E;
 
 //메모리에 데이터를 집어넣는 함수
 //매개변수 (배열의 위치, 값)
@@ -38,3 +39,6 @@ void readInstruction();
 void executeInstruction(string symbol);
 
 void init();
+
+string HexToString(word hex);
+string mHexToString(byte hex);

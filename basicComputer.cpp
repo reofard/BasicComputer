@@ -2,9 +2,23 @@
 #include <string>
 #include <bitset>
 #include "CPU_M.h"
-#include "hexTranslator.cpp"
 
 using namespace std;
+
+word MEMORY[4096];
+
+//레지스터
+word DR;
+word AR;
+word AC;
+word IR;
+word PC;
+word TR;
+word INPR;
+word OUTR;
+
+bool S;
+bool E;
 
 //메모리에 데이터를 집어넣는 함수
 //매개변수 (배열의 위치, 값)
@@ -46,12 +60,12 @@ string decodeInstruction(word instruction)
 		// 주소모드를 나타내는 4비트를 밀어버리고 12비트의 Address만 남김
 		if (I == 1)
 		{
-			AR = (IR << 4);
+			AR = IR & 0x0FFF;;
 			AR = MEMORY[AR];
 		}
 		else
-			AR = (IR << 4);
-		cout << " 04. Address = " << std::hex << (AR / 16) << "H" << endl;
+			AR = IR & 0x0FFF;;
+		cout << " 04. Address = " << std::hex << AR << "H" << endl;
 
 		return mHexToString(type);
 	}
@@ -74,6 +88,30 @@ void HLT()
 	S = false;
 }
 
+// BSA명령어 처리 함수
+void BSA()
+{
+	MEMORY[AR] = PC;
+	PC = AR + 1;
+
+}
+// ISZ명령어 처리 함수
+void ISZ()
+{
+	MEMORY[AR] = MEMORY[AR] + 1;
+	if (MEMORY[AR] == 0)
+	{
+		PC = PC + 1;
+	}
+}
+// CIL명령어 처리 함수
+void CIL()
+{
+	E = AC & 0x8000;
+	AC = AC << 1;
+	AC = AC | (word)E;
+}
+
 void executeInstruction(string symbol)
 {
 	if ("AND" == symbol)
@@ -87,9 +125,9 @@ void executeInstruction(string symbol)
 	else if ("BUN" == symbol)
 		;
 	else if ("BSA" == symbol)
-		;
+		BSA();
 	else if ("ISZ" == symbol)
-		;
+		ISZ();
 	else if ("CLA" == symbol)
 		;
 	else if ("CLE" == symbol)
@@ -101,7 +139,7 @@ void executeInstruction(string symbol)
 	else if ("CIR" == symbol)
 		;
 	else if ("CIL" == symbol)
-		;
+		CIL();
 	else if ("INC" == symbol)
 		;
 	else if ("SPA" == symbol)
@@ -134,9 +172,19 @@ int main()
 	// basicComputer 클래스를 생성한다.
 	init();
 
+	AC = 0b1000101010101000;
+	PC = 0;
+	MEMORY[0x456] = 0xFFFF;
+
 	//메모리에 임의 명령어를 입력한다.
-	MEMORY[0] = (word)0xf800;
-	MEMORY[1] = (word)0x7001;
+	
+	MEMORY[0] = (word)0x5123;
+	MEMORY[0x124] = (word)0x7040;
+	MEMORY[0x125] = (word)0x6456;
+	MEMORY[0x126] = (word)0x5130;
+	MEMORY[0x127] = (word)0x7001;
+	MEMORY[0x130] = (word)0x7040;
+	MEMORY[0x131] = (word)0x7001;
 
 	while (S)
 	{

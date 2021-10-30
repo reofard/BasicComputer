@@ -1,7 +1,5 @@
 #include <string>
-
-typedef unsigned char byte;
-typedef unsigned short word;
+#include "CPU_M.h"
 
 using namespace std;
 
@@ -75,7 +73,7 @@ string mHexToString(byte hex)
 		case 0x5:
 			return str + "BSA";
 		case 0x6:
-		return str + "ISZ";
+			return str + "ISZ";
 	}
 	return "Unknown";
 }
