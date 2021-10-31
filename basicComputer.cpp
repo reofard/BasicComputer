@@ -2,48 +2,71 @@
 #include <string>
 #include <bitset>
 #include "CPU_M.h"
-#include "hexTranslator.cpp"
+
+// ê³„ì† ì¬ì •ì˜ ì˜¤ë¥˜ê°€ ë– ì„œ ë°•ì„±í˜„ë‹˜ ì½”ë“œë¥¼ ì°¸ê³ í•˜ì˜€ìŠµë‹ˆë‹¤. 
+
+typedef unsigned char byte;
+typedef unsigned short word;
+
+//ë©”ëª¨ë¦¬
+word MEMORY[4096];
+
+//ë ˆì§€ìŠ¤í„°
+word DR;
+word AR;
+word AC;
+word IR;
+word PC;
+word TR;
+word INPR;
+word OUTR;
+
+ bool S;
+ bool E;
+
+
 
 using namespace std;
 
-//¸Ş¸ğ¸®¿¡ µ¥ÀÌÅÍ¸¦ Áı¾î³Ö´Â ÇÔ¼ö
-//¸Å°³º¯¼ö (¹è¿­ÀÇ À§Ä¡, °ª)
+
+//ë©”ëª¨ë¦¬ì— ë°ì´í„°ë¥¼ ì§‘ì–´ë„£ëŠ” í•¨ìˆ˜
+//ë§¤ê°œë³€ìˆ˜ (ë°°ì—´ì˜ ìœ„ì¹˜, ê°’)
 void inputData(int position, word data) {}
 
-//¸í·É¾î ºĞ¸® (opcode ¿Í address)
+//ëª…ë ¹ì–´ ë¶„ë¦¬ (opcode ì™€ address)
 string decodeInstruction(word instruction)
 {
-	// Instruction Register¿¡ ¸í·É¾î ÀúÀå
+	// Instruction Registerì— ëª…ë ¹ì–´ ì €ì¥
 	IR = instruction;
 
-	// ¸í·É¾î Å¸ÀÔ ÃßÃâ
+	// ëª…ë ¹ì–´ íƒ€ì… ì¶”ì¶œ
 	// T2
 	byte type = (byte)(IR >> 12);
 	bool I = type | 8;
 
 	// DECODE
-	//  ±¸ºĞÇØ³½ ¸í·É¾î ¹®ÀÚ¿­À» ÅëÇØ ¸í·É¾î Çü½Äº°·Î °á°ú¸¦ Ãâ·ÂÇÔ
+	//  êµ¬ë¶„í•´ë‚¸ ëª…ë ¹ì–´ ë¬¸ìì—´ì„ í†µí•´ ëª…ë ¹ì–´ í˜•ì‹ë³„ë¡œ ê²°ê³¼ë¥¼ ì¶œë ¥í•¨
 	switch (type)
 	{
 
-	// Opcode = 111, I = 0
+		// Opcode = 111, I = 0
 	case 0x7:
-		cout << " 02. ¸í·É¾î Çü½Ä = 'Register' reference operation" << endl;
+		cout << " 02. ëª…ë ¹ì–´ í˜•ì‹ = 'Register' reference operation" << endl;
 		cout << " 03. Symbol = " << HexToString(IR) << endl;
 		return HexToString(IR);
 
-	// Opcode = 111, I = 1
+		// Opcode = 111, I = 1
 	case 0xf:
-		cout << " 02. ¸í·É¾î Çü½Ä = 'I/O' operation" << endl;
+		cout << " 02. ëª…ë ¹ì–´ í˜•ì‹ = 'I/O' operation" << endl;
 		cout << " 03. Symbol = " << HexToString(IR) << endl;
 		return HexToString(IR);
 
-	// Opcode = 000~110, I = 0, 1
+		// Opcode = 000~110, I = 0, 1
 	default:
-		cout << " 02. ¸í·É¾î Çü½Ä = 'Memory' reference operation" << endl;
+		cout << " 02. ëª…ë ¹ì–´ í˜•ì‹ = 'Memory' reference operation" << endl;
 		cout << " 03. Symbol = " << mHexToString(type) << endl;
 
-		// ÁÖ¼Ò¸ğµå¸¦ ³ªÅ¸³»´Â 4ºñÆ®¸¦ ¹Ğ¾î¹ö¸®°í 12ºñÆ®ÀÇ Address¸¸ ³²±è
+		// ì£¼ì†Œëª¨ë“œë¥¼ ë‚˜íƒ€ë‚´ëŠ” 4ë¹„íŠ¸ë¥¼ ë°€ì–´ë²„ë¦¬ê³  12ë¹„íŠ¸ì˜ Addressë§Œ ë‚¨ê¹€
 		if (I == 1)
 		{
 			AR = (IR << 4);
@@ -56,19 +79,30 @@ string decodeInstruction(word instruction)
 		return mHexToString(type);
 	}
 }
+// BUNëª…ë ¹ì–´ ì²˜ë¦¬ í•¨ìˆ˜ 
+void BUN() 
+{
+	PC = AR;
+}
 
-// CMA¸í·É¾î Ã³¸® ÇÔ¼ö
+// CLAëª…ë ¹ì–´ ì²˜ë¦¬ í•¨ìˆ˜ 
+void CLA() 
+{
+	AC = 0;
+}
+
+// CMAëª…ë ¹ì–´ ì²˜ë¦¬ í•¨ìˆ˜
 void CMA()
 {
 	AC = ~AC;
 }
-// SPA¸í·É¾î Ã³¸® ÇÔ¼ö
+// SPAëª…ë ¹ì–´ ì²˜ë¦¬ í•¨ìˆ˜
 void SPA()
 {
 	if ((AC >> 15) == 0)
 		PC = PC + 1;
 }
-// HLT¸í·É¾î Ã³¸® ÇÔ¼ö
+// HLTëª…ë ¹ì–´ ì²˜ë¦¬ í•¨ìˆ˜
 void HLT()
 {
 	S = false;
@@ -85,13 +119,13 @@ void executeInstruction(string symbol)
 	else if ("STA" == symbol)
 		;
 	else if ("BUN" == symbol)
-		;
+		BUN();
 	else if ("BSA" == symbol)
 		;
 	else if ("ISZ" == symbol)
 		;
 	else if ("CLA" == symbol)
-		;
+		CLA();
 	else if ("CLE" == symbol)
 		;
 	else if ("CMA" == symbol)
@@ -115,9 +149,9 @@ void executeInstruction(string symbol)
 	else if ("HLT" == symbol)
 		HLT();
 	else
-		cout << "I/O ¸í·É¾î" << endl;
+		cout << "I/O ëª…ë ¹ì–´" << endl;
 
-	//¸Ş¸ğ¸® ¹× ·¹Áö½ºÅÍ »óÅÂ Ãâ·Â
+	//ë©”ëª¨ë¦¬ ë° ë ˆì§€ìŠ¤í„° ìƒíƒœ ì¶œë ¥
 }
 
 void init()
@@ -131,10 +165,10 @@ void init()
 int main()
 {
 
-	// basicComputer Å¬·¡½º¸¦ »ı¼ºÇÑ´Ù.
+	// basicComputer í´ë˜ìŠ¤ë¥¼ ìƒì„±í•œë‹¤.
 	init();
 
-	//¸Ş¸ğ¸®¿¡ ÀÓÀÇ ¸í·É¾î¸¦ ÀÔ·ÂÇÑ´Ù.
+	//ë©”ëª¨ë¦¬ì— ì„ì˜ ëª…ë ¹ì–´ë¥¼ ì…ë ¥í•œë‹¤.
 	MEMORY[0] = (word)0xf800;
 	MEMORY[1] = (word)0x7001;
 
@@ -147,7 +181,7 @@ int main()
 		word testInstruction = MEMORY[AR];
 		PC++;
 
-		cout << " 01. ÀÔ·Â = 0x" << std::hex << testInstruction << endl;
+		cout << " 01. ì…ë ¥ = 0x" << std::hex << testInstruction << endl;
 
 		string symbol = decodeInstruction(testInstruction);
 
