@@ -5,36 +5,39 @@ typedef unsigned short word;
 
 using namespace std;
 
-//¸Ş¸ğ¸®
-word MEMORY[4096];
+//ë©”ëª¨ë¦¬
+extern word MEMORY[4096];
 
-//·¹Áö½ºÅÍ
-word DR;
-word AR;
-word AC;
-word IR;
-word PC;
-word TR;
-word INPR;
-word OUTR;
+//ë ˆì§€ìŠ¤í„°
+extern word DR;
+extern word AR;
+extern word AC;
+extern word IR;
+extern word PC;
+extern word TR;
+extern word INPR;
+extern word OUTR;
 
-bool S;
-bool E;
+extern bool S;
+extern bool E;
 
-//¸Ş¸ğ¸®¿¡ µ¥ÀÌÅÍ¸¦ Áı¾î³Ö´Â ÇÔ¼ö
-//¸Å°³º¯¼ö (¹è¿­ÀÇ À§Ä¡, °ª)
+//ë©”ëª¨ë¦¬ì— ë°ì´í„°ë¥¼ ì§‘ì–´ë„£ëŠ” í•¨ìˆ˜
+//ë§¤ê°œë³€ìˆ˜ (ë°°ì—´ì˜ ìœ„ì¹˜, ê°’)
 void inputData(int position, word data);
 
-//¸í·É¾î ºĞ¸® (opcode ¿Í address)
+//ëª…ë ¹ì–´ ë¶„ë¦¬ (opcode ì™€ address)
 string decodeInstruction(word instruction);
 
-//opcode ÇØµ¶
+//opcode í•´ë…
 void decodeOpcode();
 
-//¸í·É¾î ÆÇº°
+//ëª…ë ¹ì–´ íŒë³„
 void readInstruction();
 
-//¸í·É¾î È£Ãâ
+//ëª…ë ¹ì–´ í˜¸ì¶œ
 void executeInstruction(string symbol);
 
 void init();
+
+string HexToString(word hex);
+string mHexToString(byte hex);
