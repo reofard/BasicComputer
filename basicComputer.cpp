@@ -75,7 +75,7 @@ void HLT()
 }
 // LDA명령어 처리 함수
 void LDA() {
-	DR = M[AR];
+	DR = MEMORY[AR];
 	AC = DR;
 }
 // SZE명령어 처리 함수
@@ -90,7 +90,7 @@ void executeInstruction(string symbol)
 	else if ("ADD" == symbol)
 		;
 	else if ("LDA" == symbol)
-		;
+		LDA();
 	else if ("STA" == symbol)
 		;
 	else if ("BUN" == symbol)
@@ -120,7 +120,7 @@ void executeInstruction(string symbol)
 	else if ("SZA" == symbol)
 		;
 	else if ("SZE" == symbol)
-		;
+		SZE();
 	else if ("HLT" == symbol)
 		HLT();
 	else
