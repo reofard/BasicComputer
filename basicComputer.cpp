@@ -97,6 +97,8 @@ void BSA()
 	MEMORY[AR] = PC;
 	AR = AR + 1;
 	PC = AR;
+
+
 }
 void ISZ()
 {

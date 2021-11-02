@@ -14,6 +14,7 @@ word AR;
 word AC;
 word IR;
 word PC;
+
 word TR;
 word INPR;
 word OUTR;
