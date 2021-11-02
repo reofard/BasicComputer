@@ -19,7 +19,7 @@ string decodeInstruction(word instruction)
 	// 명령어 타입 추출
 	// T2
 	byte type = (byte)(IR >> 12);
-	bool I = type | 8;
+	bool I = type >> 3;
 
 	// DECODE
 	//  구분해낸 명령어 문자열을 통해 명령어 형식별로 결과를 출력함
@@ -46,29 +46,123 @@ string decodeInstruction(word instruction)
 		// 주소모드를 나타내는 4비트를 밀어버리고 12비트의 Address만 남김
 		if (I == 1)
 		{
-			AR = (IR << 4);
+			AR = IR & 0x0fff;
 			AR = MEMORY[AR];
 		}
 		else
-			AR = (IR << 4);
-		cout << " 04. Address = " << std::hex << (AR / 16) << "H" << endl;
+			AR = IR & 0x0fff;
+		cout << " 04. Address = " << std::hex << AR << "H" << endl;
 
 		return mHexToString(type);
 	}
 }
 
-// CMA명령어 처리 함수
+// Memory Reference Instruction
+void AND()
+{
+	DR = MEMORY[AR];
+	AC = AC & DR;
+}
+void ADD()
+{
+	DR = MEMORY[AR];
+
+	bool carry = false;
+
+	for (int i = 0; i < 16; i++)
+	{
+		bool A = AC & (1 << i);
+		bool B = DR & (1 << i);
+		carry = (A & B) | ((A ^ B) & carry);
+	}
+
+	E = carry;
+	AC = AC + DR;
+}
+void LDA()
+{
+	DR = MEMORY[AR];
+	AC = DR;
+}
+void STA()
+{
+	MEMORY[AR] = AC;
+}
+void BUN()
+{
+	PC = AR;
+}
+void BSA()
+{
+	MEMORY[AR] = PC;
+	AR = AR + 1;
+	PC = AR;
+}
+void ISZ()
+{
+	DR = MEMORY[AR];
+	DR = DR + 1;
+	MEMORY[AR] = DR;
+	if (DR == 0)
+	{
+		PC = PC + 1;
+	}
+}
+
+// Register Reference Instruction
+void CLA()
+{
+	AC = 0;
+}
+void CLE()
+{
+	E = false;
+}
 void CMA()
 {
 	AC = ~AC;
 }
-// SPA명령어 처리 함수
+void CME()
+{
+	E = ~E;
+}
+void CIR()
+{
+	bool min_bit = AC & 1;
+	AC = AC >> 1;
+	AC = AC | (E << 15);
+	E = min_bit;
+}
+void CIL()
+{
+	E = AC & 0x8000;
+	AC = AC << 1;
+	AC = AC | (word)E;
+}
+void INC()
+{
+	AC = AC + 1;
+}
 void SPA()
 {
 	if ((AC >> 15) == 0)
 		PC = PC + 1;
 }
-// HLT명령어 처리 함수
+void SNA()
+{
+	if ((AC >> 15) == 1)
+		PC = PC + 1;
+}
+void SZA()
+{
+	if (AC == 0x0000)
+		PC = PC + 1;
+}
+void SZE()
+{
+	if (E == 0)
+		PC = PC + 1;
+}
 void HLT()
 {
 	S = false;
@@ -77,41 +171,41 @@ void HLT()
 void executeInstruction(string symbol)
 {
 	if ("AND" == symbol)
-		;
+		AND();
 	else if ("ADD" == symbol)
-		;
+		ADD();
 	else if ("LDA" == symbol)
-		;
+		LDA();
 	else if ("STA" == symbol)
-		;
+		STA();
 	else if ("BUN" == symbol)
-		;
+		BUN();
 	else if ("BSA" == symbol)
-		;
+		BSA();
 	else if ("ISZ" == symbol)
-		;
+		ISZ();
 	else if ("CLA" == symbol)
-		;
+		CLA();
 	else if ("CLE" == symbol)
-		;
+		CLE();
 	else if ("CMA" == symbol)
 		CMA();
 	else if ("CME" == symbol)
-		;
+		CME();
 	else if ("CIR" == symbol)
-		;
+		CIR();
 	else if ("CIL" == symbol)
-		;
+		CIL();
 	else if ("INC" == symbol)
-		;
+		INC();
 	else if ("SPA" == symbol)
 		SPA();
 	else if ("SNA" == symbol)
-		;
+		SNA();
 	else if ("SZA" == symbol)
-		;
+		SZA();
 	else if ("SZE" == symbol)
-		;
+		SZE();
 	else if ("HLT" == symbol)
 		HLT();
 	else
@@ -134,9 +228,14 @@ int main()
 	// basicComputer 클래스를 생성한다.
 	init();
 
-	//메모리에 임의 명령어를 입력한다.
-	MEMORY[0] = (word)0xf800;
-	MEMORY[1] = (word)0x7001;
+	//표 6-2,3, 바이트 코드
+	MEMORY[0] = (word)0x2004;
+	MEMORY[1] = (word)0x1005;
+	MEMORY[2] = (word)0x3006;
+	MEMORY[3] = (word)0x7001;
+	MEMORY[4] = (word)0x0053;
+	MEMORY[5] = (word)0xffe9;
+	MEMORY[6] = (word)0x0000;
 
 	while (S)
 	{
