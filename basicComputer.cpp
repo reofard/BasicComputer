@@ -224,36 +224,3 @@ void init()
 	S = true;
 }
 
-int main()
-{
-
-	// basicComputer 클래스를 생성한다.
-	init();
-
-	//표 6-2,3, 바이트 코드
-	MEMORY[0] = (word)0x2004;
-	MEMORY[1] = (word)0x1005;
-	MEMORY[2] = (word)0x3006;
-	MEMORY[3] = (word)0x7001;
-	MEMORY[4] = (word)0x0053;
-	MEMORY[5] = (word)0xffe9;
-	MEMORY[6] = (word)0x0000;
-
-	while (S)
-	{
-		// FETCH
-		// T0
-		AR = PC;
-
-		word testInstruction = MEMORY[AR];
-		PC++;
-
-		cout << " 01. 입력 = 0x" << std::hex << testInstruction << endl;
-
-		string symbol = decodeInstruction(testInstruction);
-
-		// EXECUTION
-		executeInstruction(symbol);
-	}
-	return 0;
-}

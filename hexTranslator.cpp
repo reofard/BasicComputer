@@ -12,7 +12,6 @@ string HexToString(word hex)
 	{
 	// 레지스터 참조 명령어
 	case 0x7800:
-
 		return "CLA";
 	case 0x7400:
 		return "CLE";
