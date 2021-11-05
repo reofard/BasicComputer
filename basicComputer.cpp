@@ -135,9 +135,10 @@ void CIR()
 }
 void CIL()
 {
-	E = AC & 0x8000;
+	bool max_bit = AC & 0x8000;
 	AC = AC << 1;
-	AC = AC | (word)E;
+	AC = AC | E;
+	E = max_bit;
 }
 void INC()
 {
@@ -222,7 +223,9 @@ void init()
 	S = true;
 }
 
-int main()
+// void setMemory(word[] M) {}
+
+int start()
 {
 
 	// basicComputer 클래스를 생성한다.
