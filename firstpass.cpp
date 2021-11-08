@@ -1,4 +1,4 @@
-#include "splitblank.cpp"
+
 #include "BasicComputer.cpp"
 #include <iostream>
 #include <string>
@@ -18,6 +18,22 @@ bool labelCheck(vector<string> token) {
 
 	
 }
+
+vector<string> getTokens(string line)
+{
+	vector<string> token;
+	size_t pos = 0;
+	line.append(" "); // line의 마지막에 공백이 없으면 마지막 토큰은 지워짐
+	while ((pos = line.find(' ')) != string::npos)
+	{
+		if (line.substr(0, pos).length() > 0)
+			token.push_back(line.substr(0, pos));
+		line.erase(0, pos + 1);
+	}
+	return token;
+}
+
+
 bool ORGCheck(vector<string> token) {
 	
 	if (token[0] == "ORG")
@@ -26,21 +42,26 @@ bool ORGCheck(vector<string> token) {
 	return false;
 }
 
+
 int main(void) {
 	
 	init();
 	word LC = 0;
-
-	ifstream file("test2.txt");
+	
+	
+	
+	ifstream file("test.txt");
 
 	vector<string> token = {};
 	map<string, word> symbolTable;
-
+	
 	if (true == file.is_open()) {
 		string line;
+		
 		while (file.good()) {
 			getline(file, line);
-			token = splitBlank(line);
+			token = getTokens(line);
+			cout << token.size() << endl;
 
 			
 			//ORG Check
@@ -56,7 +77,6 @@ int main(void) {
 
 			// labelCheck
 			if (labelCheck(token)) {
-				cout << token[0] << endl;
 				string label = token[0];
 				label = label.substr(0, label.size() - 1); // , 제거
 				symbolTable.insert(pair<string, word>(label, LC));
