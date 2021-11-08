@@ -54,20 +54,6 @@ vector<string> getTokens(string line)
 	}
 	return token;
 }
-
-word str2hex(string Number)
-{
-	word temp = 0;
-	//스트링에서 16진수로 변환
-	return 0;
-}
-word str2dec(string Number)
-{
-	word temp = 0;
-	//스트링에서 10진수로 변환
-	return temp;
-}
-
 int main()
 {
 	string filename("test.txt");
@@ -88,7 +74,7 @@ int main()
 		vector<string> tokens = getTokens(line + ' ');
 
 		//수도 코드 처리
-		if (/*수도 코드인가?*/)
+		if (/*수도 코드인가? 박하민*/)
 		{
 			if (/*ORG인가?*/)
 			{
@@ -116,7 +102,7 @@ int main()
 		}
 		if (/*MRI명령어가 아닌가?*/)
 		{
-			//서정이
+			//박하민
 			continue;
 		}
 		cout << "Error in line of code" << endl;
