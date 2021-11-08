@@ -118,7 +118,7 @@ int main()
 	input_file.close();
 
 
-		//symbolTable 체크
+	//임시_symbolTable 체크용
 	for (map<string, word>::iterator itr = symbolTable.begin(); itr != symbolTable.end(); itr++) {
         cout << itr->first << " " << itr->second << std::endl;
     }
