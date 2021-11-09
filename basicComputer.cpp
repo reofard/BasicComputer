@@ -173,7 +173,7 @@ void HLT()
 void INP()
 {
 	AC = (AC & 0xff00) | (INPR & 0x00ff); // AC(0,7) <- INPR
-										  // FGI = false;						  // FGI <- 0
+	FGI = false;						  // FGI <- 0
 }
 
 void OUT()
@@ -298,15 +298,12 @@ int start(int startPoint)
 		}
 
 		word instructon = MEMORY[AR];
-		// cout << std::hex << instructon << endl;
 		PC++;
 		if (instructon == 0)
 			continue;
 
-		// cout << " 01. ют╥б = 0x" << std::hex << instructon << endl;
-
 		string symbol = decodeInstruction(instructon);
-		cout << symbol << " " << std::hex << PC - 1 << " " << FGI << endl;
+
 		// EXECUTION
 		executeInstruction(symbol);
 	}
