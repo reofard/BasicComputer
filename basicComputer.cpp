@@ -1,3 +1,4 @@
+#include <conio.h>
 #include <iostream>
 #include <string>
 #include <bitset>
@@ -28,20 +29,20 @@ string decodeInstruction(word instruction)
 
 	// Opcode = 111, I = 0
 	case 0x7:
-		cout << " 02. 명령어 형식 = 'Register' reference operation" << endl;
-		cout << " 03. Symbol = " << HexToString(IR) << endl;
+		// cout << " 02. 명령어 형식 = 'Register' reference operation" << endl;
+		// cout << " 03. Symbol = " << HexToString(IR) << endl;
 		return HexToString(IR);
 
 	// Opcode = 111, I = 1
 	case 0xf:
-		cout << " 02. 명령어 형식 = 'I/O' operation" << endl;
-		cout << " 03. Symbol = " << HexToString(IR) << endl;
+		// cout << " 02. 명령어 형식 = 'I/O' operation" << endl;
+		// cout << " 03. Symbol = " << HexToString(IR) << endl;
 		return HexToString(IR);
 
 	// Opcode = 000~110, I = 0, 1
 	default:
-		cout << " 02. 명령어 형식 = 'Memory' reference operation" << endl;
-		cout << " 03. Symbol = " << mHexToString(type) << endl;
+		// cout << " 02. 명령어 형식 = 'Memory' reference operation" << endl;
+		// cout << " 03. Symbol = " << mHexToString(type) << endl;
 
 		// 주소모드를 나타내는 4비트를 밀어버리고 12비트의 Address만 남김
 		if (I == 1)
@@ -51,7 +52,7 @@ string decodeInstruction(word instruction)
 		}
 		else
 			AR = IR & 0x0fff;
-		cout << " 04. Address = " << std::hex << AR << "H" << endl;
+		// cout << " 04. Address = " << std::hex << AR << "H" << endl;
 
 		return mHexToString(type);
 	}
@@ -169,6 +170,43 @@ void HLT()
 	S = false;
 }
 
+void INP()
+{
+	AC = (AC & 0xff00) | (INPR & 0x00ff); // AC(0,7) <- INPR
+										  // FGI = false;						  // FGI <- 0
+}
+
+void OUT()
+{
+	OUTR = AC & 0x00ff; // OUTR  <- AC(0,7)
+	FGO = false;		// FGO <- 0
+	cout << "OUTR = " << std::hex << OUTR << endl;
+}
+
+void SKI()
+{
+	if (FGI == true)
+	{
+		PC = PC + 1;
+	}
+}
+
+void SKO()
+{
+
+	if (FGO == true)
+		PC = PC + 1;
+}
+
+void ION()
+{
+	IEN = true;
+}
+
+void IOF()
+{
+	IEN = false;
+}
 void executeInstruction(string symbol)
 {
 	if ("AND" == symbol)
@@ -209,8 +247,20 @@ void executeInstruction(string symbol)
 		SZE();
 	else if ("HLT" == symbol)
 		HLT();
+	else if ("INP" == symbol)
+		INP();
+	else if ("OUT" == symbol)
+		OUT();
+	else if ("SKI" == symbol)
+		SKI();
+	else if ("SKO" == symbol)
+		SKO();
+	else if ("ION" == symbol)
+		ION();
+	else if ("IOF" == symbol)
+		IOF();
 	else
-		cout << "I/O 명령어" << endl;
+		cout << "존재하지 명령어" << endl;
 
 	//메모리 및 레지스터 상태 출력
 }
@@ -221,38 +271,42 @@ void init()
 	AR = 0;
 	TR = 0;
 	S = true;
+	FGI = true;
+	FGO = false;
+	IEN = true;
+
+	INPR = (word)'a';
 }
 
 // void setMemory(word[] M) {}
 
-int start()
+int start(int startPoint)
 {
-
-	// basicComputer 클래스를 생성한다.
+	PC = startPoint - 1;
 	init();
-
-	//표 6-2,3, 바이트 코드
-	MEMORY[0] = (word)0x2004;
-	MEMORY[1] = (word)0x1005;
-	MEMORY[2] = (word)0x3006;
-	MEMORY[3] = (word)0x7001;
-	MEMORY[4] = (word)0x0053;
-	MEMORY[5] = (word)0xffe9;
-	MEMORY[6] = (word)0x0000;
-
 	while (S)
 	{
 		// FETCH
 		// T0
 		AR = PC;
 
-		word testInstruction = MEMORY[AR];
+		//입력 인터럽트
+		if (kbhit())
+		{
+			INPR = getch();
+			FGI = true;
+		}
+
+		word instructon = MEMORY[AR];
+		// cout << std::hex << instructon << endl;
 		PC++;
+		if (instructon == 0)
+			continue;
 
-		cout << " 01. 입력 = 0x" << std::hex << testInstruction << endl;
+		// cout << " 01. 입력 = 0x" << std::hex << instructon << endl;
 
-		string symbol = decodeInstruction(testInstruction);
-
+		string symbol = decodeInstruction(instructon);
+		cout << symbol << " " << std::hex << PC - 1 << " " << FGI << endl;
 		// EXECUTION
 		executeInstruction(symbol);
 	}
