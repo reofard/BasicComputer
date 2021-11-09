@@ -168,18 +168,6 @@ void HLT()
 	S = false;
 }
 
-// INC명령어 처리 함수
-void INC()
-{
-	AC = AC + 1;
-}
-
-// SZA명령어 처리 함수
-void SZA()
-{
-	if (AC == 0x0000)
-		PC = PC + 1;
-}
 
 
 void executeInstruction(string symbol)

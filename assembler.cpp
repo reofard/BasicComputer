@@ -6,14 +6,14 @@
 #include <map>
 using namespace std;
 
-word MEMORY[4096];
+//word MEMORY[4096];
 vector<string> lines;
 
 map<string, word> symbolTable;
 map<string, word> mriTable;
 map<string, word> non_mriTable;
 
-void init()
+void init2()
 {
 	// mri테이블 구성
 	mriTable.insert({"AND", 0});
@@ -42,6 +42,7 @@ void init()
 	symbolTable.insert({"SUB", -23});
 	symbolTable.insert({"DIF", 0});
 }
+
 vector<string> getTokens(string line)
 {
 	vector<string> token;
@@ -54,6 +55,53 @@ vector<string> getTokens(string line)
 	}
 	return token;
 }
+
+bool pseudoCheck(vector<string> token)
+{
+	if (token[0] == "ORG" ||
+		token[0] == "END" ||
+		token[0] == "DEC" ||
+		token[0] == "HEX"	
+	)
+		return true;
+	return false;
+}
+
+bool MRICheck (vector<string> token)
+{
+	
+	if (token[0] == "AND" ||
+		token[0] == "ADD" ||
+		token[0] == "LDA" ||
+		token[0] == "STA" ||
+		token[0] == "BUN" ||
+		token[0] == "BSA" ||
+		token[0] == "ISZ" 	
+	)
+		return true;
+
+	return false;
+}
+
+
+bool ORGCheck(vector<string> token)
+{
+
+	if (token[0] == "ORG")
+		return true;
+
+	return false;
+}
+
+bool ENDCheck(vector<string> token)
+{
+	if (token[0] == "END")
+		return true;
+
+	return false;
+}
+
+
 int main()
 {
 	string filename("test.txt");
@@ -73,36 +121,36 @@ int main()
 		cout << line << endl;
 		vector<string> tokens = getTokens(line + ' ');
 
-		//수도 코드 처리
-		if (/*수도 코드인가? 박하민*/)
+		
+		if (pseudoCheck(tokens))//수도 코드 처리
 		{
-			if (/*ORG인가?*/)
+			cout << "수도임" << endl;
+			if (ORGCheck(tokens) != 0)
 			{
-				//신호수
+				LC = stoi(tokens[1], 0, 16);
+				continue;
 			}
-			if (/*END인가?*/)
+			if (ENDCheck(tokens) != 0)
 			{
-				//신호수
+				break;
 			}
-			if (/*DEX인가?*/)
+			//if (/*DEX인가?*/)
 			{
 				//서정이
 			}
-			if (/*HEX인가?*/)
+			//if (/*HEX인가?*/)
 			{
 				//서완석
 			}
 			continue;
 		}
 		//메모리 레퍼런스 명령어 처리
-		if (/*MRI명령어인가?*/)
+		if (MRICheck(tokens))
 		{
-			//서완석
 			continue;
 		}
-		if (/*MRI명령어가 아닌가?*/)
-		{
-			//박하민
+		if (MRICheck(tokens) == false)
+		{	
 			continue;
 		}
 		cout << "Error in line of code" << endl;
