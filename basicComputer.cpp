@@ -4,6 +4,7 @@
 #include "CPU_M.h"
 #include "hexTranslator.cpp"
 
+
 using namespace std;
 
 //메모리에 데이터를 집어넣는 함수
@@ -165,9 +166,74 @@ void SZE()
 	if (E == 0)
 		PC = PC + 1;
 }
+
 void HLT()
 {
 	S = false;
+}
+ // I/O instruction
+
+void INP()
+{
+	
+	AC = 0;
+	cout << "INPR: " << std::hex << INPR << endl;
+	cout << "BEFORE AC: " <<std::hex<< AC <<" FGI:"<<FGI<< endl;
+
+	AC = INPR & 0x00ff; // AC(0,7) <- INPR
+	FGI = false; // FGI <- 0
+	cout << "AFTER AC: " <<std::hex<< AC << " FGI:" << FGI << endl;
+
+
+}
+
+
+void OUT()
+{
+	cout << "BEFORE OUTR: " << std::hex << OUTR << endl;
+	cout << "BEFORE AC: " << std::hex << AC << " FGO:" << FGO << endl;
+
+	OUTR = AC & 0x00ff; // OUTR  <- AC(0,7)
+	FGO = false; // FGO <- 0
+
+	cout << "AFTER OUTR: " << std::hex << OUTR << endl;
+
+	cout << "AFTER AC: " << std::hex << AC << " FGO:" << FGO << endl;
+
+	
+}
+
+void SKI() {
+	cout << "before FGI: " << FGI << " PC:" << std::hex << PC << endl;
+	if (FGI == true) {
+		PC = PC + 1;
+	}
+	cout << "AFTER FGI: " << FGI << " PC:" << std::hex << PC << endl;
+
+}
+
+void SKO() {
+	cout << "before FGI: " << FGO << " PC:" << std::hex << PC << endl;
+
+	if (FGO == true)
+		PC = PC + 1;
+	cout << "AFTER FGI: " << FGO << " PC:" << std::hex << PC << endl;
+
+}
+
+void ION() {
+	cout << "before IEN: " << IEN << endl;
+
+	IEN = true;
+	cout << "AFTER IEN: " << IEN << endl;
+
+}
+
+void IOF() {
+	cout << "before IEN: " << IEN << endl;
+	IEN = false;
+	cout << "AFTER IEN: " << IEN << endl;
+
 }
 
 void executeInstruction(string symbol)
@@ -210,11 +276,26 @@ void executeInstruction(string symbol)
 		SZE();
 	else if ("HLT" == symbol)
 		HLT();
+	else if ("INP" == symbol)
+		INP();
+	else if ("OUT" == symbol)
+		OUT();
+	else if ("SKI" == symbol)
+		SKI();
+	else if ("SKO" == symbol)
+		SKO();
+	else if ("ION" == symbol)
+		ION();
+	else if ("IOF" == symbol)
+		IOF();
 	else
-		cout << "I/O 명령어" << endl;
+		return;
+
 
 	//메모리 및 레지스터 상태 출력
 }
+
+
 
 void init()
 {
@@ -222,5 +303,24 @@ void init()
 	AR = 0;
 	TR = 0;
 	S = true;
+}
+
+int main() {
+	string instructions[] = { "INP","OUT","SKI","SKO","ION","IOF" };
+	INPR = (word)0x45f2; // 임의의 input
+	FGI = true;
+	FGO = true;
+	for (int i = 0; i < 6; i++) {
+		cout << "#################instruction I/O: " << instructions[i] << "###################"<< endl;
+		executeInstruction(instructions[i]);
+
+		if (i == 1) {
+			FGI = true;
+			FGO = true;
+		}
+	}
+
+
+	
 }
 
