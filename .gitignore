@@ -11,3 +11,6 @@ basicComputer.exe
 /.vs/BasicComputer/v16/Browse.VC.db-shm
 /.vs/BasicComputer/v16/Browse.VC.db
 /.vs/BasicComputer/v16/.suo
+/.vs/BasicComputer/v16/ipch/AutoPCH/9b3f49e570aa53c7/HEXTRANSLATOR.ipch
+/.vs/BasicComputer/v16/ipch/AutoPCH/f9e2b715dfd226c2/ASSEMBLER.ipch
+/.vs/BasicComputer/v16/ipch/AutoPCH/d4038a0c36d0cd9a/ASSEMBLER_FIRST PASS.ipch

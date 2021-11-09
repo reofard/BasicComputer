@@ -54,6 +54,13 @@ vector<string> getTokens(string line)
 	}
 	return token;
 }
+bool hexCheck(vector<string> tokens)
+{
+	if (tokens[1] == "HEX")
+		return true;
+
+	return false;
+}
 int main()
 {
 	string filename("test.txt");
@@ -88,9 +95,10 @@ int main()
 			{
 				//서정이
 			}
-			if (/*HEX인가?*/)
+			if (hexCheck(tokens))
 			{
-				//서완석
+				int tmp = stoi(tokens[2], nullptr, 16);
+				MEMORY[LC] = tmp;
 			}
 			continue;
 		}
