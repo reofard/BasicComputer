@@ -271,11 +271,10 @@ void init()
 	AR = 0;
 	TR = 0;
 	S = true;
-	FGI = true;
+
+	FGI = false;
 	FGO = false;
 	IEN = true;
-
-	INPR = (word)'a';
 }
 
 // void setMemory(word[] M) {}
