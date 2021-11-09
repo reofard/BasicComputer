@@ -81,9 +81,8 @@ void getSymbolTable(map<string, word> &symbolTable, vector<string> tokens, word 
     symbolTable.insert(pair<string, word>(tokens[0], LC));
 }
 
-int firstPass()
+int firstPass(string filename)
 {
-    string filename("test.txt");
     string line;
     word LC = 0;
     ifstream input_file(filename);
