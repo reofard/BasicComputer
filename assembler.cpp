@@ -61,6 +61,17 @@ bool hexCheck(vector<string> tokens)
 
 	return false;
 }
+bool MRICheck(vector<string> token)
+{
+	if (mriTable.find(token[0]) != mriTable.end())
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
 int main()
 {
 	string filename("test.txt");
@@ -103,9 +114,9 @@ int main()
 			continue;
 		}
 		//메모리 레퍼런스 명령어 처리
-		if (/*MRI명령어인가?*/)
+		if (MRICheck(tokens))
 		{
-			//서완석
+			MEMORY[LC] = (word)mriTable [[tokens[0]];
 			continue;
 		}
 		if (/*MRI명령어가 아닌가?*/)
