@@ -21,7 +21,8 @@ void init2()
 	mriTable.insert({"LDA", 2});
 	mriTable.insert({"STA", 3});
 	mriTable.insert({"BUN", 4});
-	mriTable.insert({"ISZ", 5});
+	mriTable.insert({"BSA", 5});
+	mriTable.insert({"ISZ", 6});
 
 	// non mri테이블 구성
 	non_mriTable.insert({"CLA", 0x7800});
@@ -56,6 +57,9 @@ vector<string> getTokens(string line)
 	return token;
 }
 
+
+
+
 bool pseudoCheck(vector<string> token)
 {
 	if (token[0] == "ORG" ||
@@ -69,20 +73,27 @@ bool pseudoCheck(vector<string> token)
 
 bool MRICheck (vector<string> token)
 {
-	
-	if (token[0] == "AND" ||
-		token[0] == "ADD" ||
-		token[0] == "LDA" ||
-		token[0] == "STA" ||
-		token[0] == "BUN" ||
-		token[0] == "BSA" ||
-		token[0] == "ISZ" 	
-	)
-		return true;
-
-	return false;
+	if (mriTable.find(token[0]) != mriTable.end()) 
+	{ 
+		return true; 
+	} 
+	else 
+	{
+		return false; 
+	}
 }
 
+bool nonMRICheck (vector<string> token)
+{
+	if (non_mriTable.find(token[0]) != non_mriTable.end()) 
+	{ 
+		return true; 
+	}
+	else 
+	{ 
+		return false; 
+	}
+}
 
 bool ORGCheck(vector<string> token)
 {
@@ -102,8 +113,23 @@ bool ENDCheck(vector<string> token)
 }
 
 
+void storeNonMRI (vector<string> token, int LC)
+{
+	MEMORY[LC] = (word)non_mriTable[token[0]];
+}
+
+void storeMRI (vector<string> token, int LC)
+{
+
+}
+
+
+
+
 int main()
 {
+	init2();
+
 	string filename("test.txt");
 	string line;
 	word LC = 0;
@@ -124,7 +150,6 @@ int main()
 		
 		if (pseudoCheck(tokens))//수도 코드 처리
 		{
-			cout << "수도임" << endl;
 			if (ORGCheck(tokens) != 0)
 			{
 				LC = stoi(tokens[1], 0, 16);
@@ -149,8 +174,9 @@ int main()
 		{
 			continue;
 		}
-		if (MRICheck(tokens) == false)
+		if (nonMRICheck(tokens))
 		{	
+			storeNonMRI(tokens, LC);
 			continue;
 		}
 		cout << "Error in line of code" << endl;
