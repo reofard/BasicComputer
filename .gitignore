@@ -3,11 +3,14 @@ basicComputer.exe
 .vscode/settings.json
 .vscode/tasks.json
 /.vs/VSWorkspaceState.json
+/.vs/slnx.sqlite
+/.vs/ProjectSettings.json
+/.vs/BasicComputer/v16/ipch/AutoPCH/39a78cf34b9144d3/BASICCOMPUTER.ipch
 /.vs/BasicComputer/v16/Browse.VC.opendb
 /.vs/BasicComputer/v16/Browse.VC.db-wal
 /.vs/BasicComputer/v16/Browse.VC.db-shm
 /.vs/BasicComputer/v16/Browse.VC.db
-/.vs/BasicComputer/v16/ipch/AutoPCH/39a78cf34b9144d3/BASICCOMPUTER.ipch
 /.vs/BasicComputer/v16/.suo
-/.vs/ProjectSettings.json
-/.vs/slnx.sqlite
+/.vs/BasicComputer/v16/ipch/AutoPCH/9b3f49e570aa53c7/HEXTRANSLATOR.ipch
+/.vs/BasicComputer/v16/ipch/AutoPCH/f9e2b715dfd226c2/ASSEMBLER.ipch
+/.vs/BasicComputer/v16/ipch/AutoPCH/d4038a0c36d0cd9a/ASSEMBLER_FIRST PASS.ipch
