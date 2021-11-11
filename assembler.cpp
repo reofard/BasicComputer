@@ -1,4 +1,5 @@
 #include "BasicComputer.cpp"
+#include "firstpass.cpp"
 #include <iostream>
 #include <string>
 #include <fstream>
@@ -6,49 +7,16 @@
 #include <map>
 using namespace std;
 
-word MEMORY[4096];
 vector<string> lines;
 
-map<string, word> symbolTable;
-map<string, word> mriTable;
-map<string, word> non_mriTable;
-
-void init()
-{
-	// mri테이블 구성
-	mriTable.insert({"AND", 0});
-	mriTable.insert({"ADD", 1});
-	mriTable.insert({"LDA", 2});
-	mriTable.insert({"STA", 3});
-	mriTable.insert({"BUN", 4});
-	mriTable.insert({"ISZ", 5});
-
-	// non mri테이블 구성
-	non_mriTable.insert({"CLA", 0x7800});
-	non_mriTable.insert({"CLE", 0x7400});
-	non_mriTable.insert({"CMA", 0x7200});
-	non_mriTable.insert({"CME", 0x7100});
-	non_mriTable.insert({"CIR", 0x7080});
-	non_mriTable.insert({"CIL", 0x7040});
-	non_mriTable.insert({"INC", 0x7020});
-	non_mriTable.insert({"SPA", 0x7010});
-	non_mriTable.insert({"SNA", 0x7008});
-	non_mriTable.insert({"SZA", 0x7004});
-	non_mriTable.insert({"SZE", 0x7002});
-	non_mriTable.insert({"HLT", 0x7001});
-
-	// mritable 받아오기
-	symbolTable.insert({"MIN", 83});
-	symbolTable.insert({"SUB", -23});
-	symbolTable.insert({"DIF", 0});
-}
-vector<string> getTokens(string line)
+vector<string> secondToken(string line)
 {
 	vector<string> token;
 	size_t pos = 0;
 	while ((pos = line.find(' ')) != string::npos)
 	{
-		if (line.substr(0, pos).length() > 0)
+		string temp = line.substr(0, pos);
+		if (temp.length() > 0 && temp.find(',') == string::npos)
 			token.push_back(line.substr(0, pos));
 		line.erase(0, pos + 1);
 	}
@@ -56,9 +24,13 @@ vector<string> getTokens(string line)
 }
 int main()
 {
-	string filename("test.txt");
+	string filename("test2.txt");
 	string line;
-	word LC = 0;
+	word LC = -1;
+
+	firstPass(filename);
+	createTable();
+
 	ifstream input_file(filename);
 
 	if (!input_file.is_open())
@@ -67,48 +39,60 @@ int main()
 		return 0;
 	}
 
+	// SecondPass
 	while (getline(input_file, line))
 	{
 		LC++;
-		cout << line << endl;
-		vector<string> tokens = getTokens(line + ' ');
-
+		vector<string> tokens = secondToken(line + ' ');
+		if (tokens.size() == 0)
+			continue;
 		//수도 코드 처리
-		if (/*수도 코드인가? 박하민*/)
+		if (tokens[0] == "ORG")
 		{
-			if (/*ORG인가?*/)
-			{
-				//신호수
-			}
-			if (/*END인가?*/)
-			{
-				//신호수
-			}
-			if (/*DEX인가?*/)
-			{
-				//서정이
-			}
-			if (/*HEX인가?*/)
-			{
-				//서완석
-			}
+			LC = stoi(tokens[1], nullptr, 16) - 1;
 			continue;
 		}
-		//메모리 레퍼런스 명령어 처리
-		if (/*MRI명령어인가?*/)
+		if (tokens[0] == "END")
 		{
-			//서완석
+			break;
+		}
+		if (tokens[0] == "DEC")
+		{
+			MEMORY[LC] = stoi(tokens[1], nullptr, 10);
 			continue;
 		}
-		if (/*MRI명령어가 아닌가?*/)
+		if (tokens[0] == "HEX")
 		{
-			//박하민
+			MEMORY[LC] = stoi(tokens[1], nullptr, 16);
+			continue;
+		}
+		// 메모리 레퍼런스 명령어 처리
+		if (mriTable.find(tokens[0]) != mriTable.end())
+		{
+			word temp = mriTable[tokens[0]] << 12;
+			word addr = symbolTable[tokens[1]] & 4095;
+			temp |= addr;
+			if (tokens.size() == 3)
+			{
+				if (tokens[2] == "I")
+				{
+					temp |= (1 << 15);
+				}
+			}
+			MEMORY[LC] = temp;
+			continue;
+		}
+		if (non_mriTable.find(tokens[0]) != non_mriTable.end())
+		{
+			word temp = non_mriTable[tokens[0]];
+			MEMORY[LC] = temp;
 			continue;
 		}
 		cout << "Error in line of code" << endl;
 	}
 	input_file.close();
 
-	//바이트 코드 basic_computer에 전달
+	// BasicComputer 실행
+	start(0x100);
 	return 0;
 }
